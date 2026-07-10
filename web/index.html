@@ -1209,72 +1209,74 @@
         </div>
 
         <!-- ===== PAGE: TEMPLATES ===== -->
-        <div id="page-templates" class="page">
-            <div style="font-size:18px; font-weight:700; margin-bottom:12px;">🎨 Choose Template</div>
-            <div class="template-grid" id="templateGrid">
-                <div class="template-card glass active" onclick="selectTemplate('temp1')">
-                    <div class="preview" style="background: linear-gradient(135deg, #1a1a2e, #2d2d44);">
-                        <span>📄 v1</span>
-                    </div>
-                    <div class="name">Template 1</div>
-                    <div class="badge">Classic</div>
-                </div>
-                <div class="template-card glass" onclick="selectTemplate('temp2')">
-                    <div class="preview" style="background: linear-gradient(135deg, #1a1a2e, #2d2d44);">
-                        <span>📄 v2</span>
-                    </div>
-                    <div class="name">Template 2</div>
-                    <div class="badge">Modern</div>
-                </div>
-                <div class="template-card glass" onclick="selectTemplate('temp3')">
-                    <div class="preview" style="background: linear-gradient(135deg, #1a1a2e, #2d2d44);">
-                        <span>📄 v3</span>
-                    </div>
-                    <div class="name">Template 3</div>
-                    <div class="badge">Premium</div>
-                </div>
+<div id="page-templates" class="page">
+    <div style="font-size:18px; font-weight:700; margin-bottom:12px;">🎨 Choose Template</div>
+    
+    <!-- Template Grid -->
+    <div class="template-grid" id="templateGrid">
+        <div class="template-card glass active" data-template="temp1" onclick="selectTemplate('temp1')">
+            <div class="preview">
+                <img src="templates/preview1.jpg" alt="Template 1" style="width:100%; height:100%; object-fit:cover;">
             </div>
-
-            <!-- Print Settings -->
-            <div style="font-size:16px; font-weight:600; margin:16px 0 10px;">⚙️ Print Settings</div>
-            <div class="settings-grid">
-                <div class="setting-row">
-                    <div class="setting-group glass">
-                        <div class="label">🎨 Color Mode</div>
-                        <div class="options" id="colorOptions">
-                            <span class="opt active" onclick="setSetting('color', 'color')">Color</span>
-                            <span class="opt" onclick="setSetting('color', 'bw')">B&amp;W</span>
-                        </div>
-                    </div>
-                    <div class="setting-group glass">
-                        <div class="label">📄 Format</div>
-                        <div class="options" id="formatOptions">
-                            <span class="opt active" onclick="setSetting('format', 'png')">PNG</span>
-                            <span class="opt" onclick="setSetting('format', 'jpg')">JPG</span>
-                            <span class="opt" onclick="setSetting('format', 'pdf')">PDF</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="setting-row">
-                    <div class="setting-group glass">
-                        <div class="label">🔄 Layout</div>
-                        <div class="options" id="layoutOptions">
-                            <span class="opt" onclick="setSetting('layout', 'normal')">Normal</span>
-                            <span class="opt active" onclick="setSetting('layout', 'mirror')">Mirror</span>
-                        </div>
-                    </div>
-                    <div class="setting-group glass">
-                        <div class="label">📏 Quality</div>
-                        <div class="options" id="qualityOptions">
-                            <span class="opt" onclick="setSetting('quality', 'standard')">Standard</span>
-                            <span class="opt active" onclick="setSetting('quality', 'high')">High</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <button class="btn btn-primary" onclick="applySettings()">✅ Apply Settings</button>
+            <div class="name">Template 1</div>
+            <div class="badge">Classic</div>
         </div>
+        <div class="template-card glass" data-template="temp2" onclick="selectTemplate('temp2')">
+            <div class="preview">
+                <img src="templates/preview2.jpg" alt="Template 2" style="width:100%; height:100%; object-fit:cover;">
+            </div>
+            <div class="name">Template 2</div>
+            <div class="badge">Modern</div>
+        </div>
+        <div class="template-card glass" data-template="temp3" onclick="selectTemplate('temp3')">
+            <div class="preview">
+                <img src="templates/preview3.jpg" alt="Template 3" style="width:100%; height:100%; object-fit:cover;">
+            </div>
+            <div class="name">Template 3</div>
+            <div class="badge">Premium</div>
+        </div>
+    </div>
+
+    <!-- Print Settings -->
+    <div style="font-size:16px; font-weight:600; margin:16px 0 10px;">⚙️ Print Settings</div>
+    <div class="settings-grid">
+        <div class="setting-row">
+            <div class="setting-group glass">
+                <div class="label">🎨 Color Mode</div>
+                <div class="options" id="colorOptions">
+                    <span class="opt active" onclick="setSetting('color', 'color')">Color</span>
+                    <span class="opt" onclick="setSetting('color', 'bw')">B&amp;W</span>
+                </div>
+            </div>
+            <div class="setting-group glass">
+                <div class="label">📄 Format</div>
+                <div class="options" id="formatOptions">
+                    <span class="opt active" onclick="setSetting('format', 'png')">PNG</span>
+                    <span class="opt" onclick="setSetting('format', 'jpg')">JPG</span>
+                    <span class="opt" onclick="setSetting('format', 'pdf')">PDF</span>
+                </div>
+            </div>
+        </div>
+        <div class="setting-row">
+            <div class="setting-group glass">
+                <div class="label">🔄 Layout</div>
+                <div class="options" id="layoutOptions">
+                    <span class="opt" onclick="setSetting('layout', 'normal')">Normal</span>
+                    <span class="opt active" onclick="setSetting('layout', 'mirror')">Mirror</span>
+                </div>
+            </div>
+            <div class="setting-group glass">
+                <div class="label">📏 Quality</div>
+                <div class="options" id="qualityOptions">
+                    <span class="opt" onclick="setSetting('quality', 'standard')">Standard</span>
+                    <span class="opt active" onclick="setSetting('quality', 'high')">High</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button class="btn btn-primary" onclick="applySettings()">✅ Apply Settings</button>
+</div>
 
         <!-- ===== PAGE: HISTORY ===== -->
         <div id="page-history" class="page">
