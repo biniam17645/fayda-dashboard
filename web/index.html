@@ -1165,22 +1165,22 @@
             <div style="font-size:18px; font-weight:700; margin-bottom:12px;">🎨 Choose Template</div>
             <div class="template-grid" id="templateGrid">
                 <div class="template-card glass" data-template="temp1" onclick="selectTemplate('temp1')">
-                    <div class="preview" style="background: linear-gradient(135deg, #1a1a2e, #2d2d44);">
-                        <span>📄 v1</span>
+                    <div class="preview">
+                        <img src="templates/preview1.jpg" alt="Template 1" style="width:100%; height:100%; object-fit:cover;">
                     </div>
                     <div class="name">Template 1</div>
                     <div class="badge">Classic</div>
                 </div>
                 <div class="template-card glass" data-template="temp2" onclick="selectTemplate('temp2')">
-                    <div class="preview" style="background: linear-gradient(135deg, #1a1a2e, #2d2d44);">
-                        <span>📄 v2</span>
+                    <div class="preview">
+                        <img src="templates/preview2.jpg" alt="Template 2" style="width:100%; height:100%; object-fit:cover;">
                     </div>
                     <div class="name">Template 2</div>
                     <div class="badge">Modern</div>
                 </div>
                 <div class="template-card glass" data-template="temp3" onclick="selectTemplate('temp3')">
-                    <div class="preview" style="background: linear-gradient(135deg, #1a1a2e, #2d2d44);">
-                        <span>📄 v3</span>
+                    <div class="preview">
+                        <img src="templates/preview3.jpg" alt="Template 3" style="width:100%; height:100%; object-fit:cover;">
                     </div>
                     <div class="name">Template 3</div>
                     <div class="badge">Premium</div>
@@ -1194,16 +1194,16 @@
                     <div class="setting-group glass">
                         <div class="label">🎨 Color Mode</div>
                         <div class="options" id="colorOptions">
-                            <span class="opt active" onclick="setSetting('color', 'color')">Color</span>
-                            <span class="opt" onclick="setSetting('color', 'bw')">B&amp;W</span>
+                            <span class="opt active" onclick="setSetting('color', 'Color')">Color</span>
+                            <span class="opt" onclick="setSetting('color', 'B&W')">B&amp;W</span>
                         </div>
                     </div>
                     <div class="setting-group glass">
                         <div class="label">📄 Format</div>
                         <div class="options" id="formatOptions">
-                            <span class="opt active" onclick="setSetting('format', 'png')">PNG</span>
-                            <span class="opt" onclick="setSetting('format', 'jpg')">JPG</span>
-                            <span class="opt" onclick="setSetting('format', 'pdf')">PDF</span>
+                            <span class="opt active" onclick="setSetting('format', 'PNG')">PNG</span>
+                            <span class="opt" onclick="setSetting('format', 'JPG')">JPG</span>
+                            <span class="opt" onclick="setSetting('format', 'PDF')">PDF</span>
                         </div>
                     </div>
                 </div>
@@ -1211,15 +1211,15 @@
                     <div class="setting-group glass">
                         <div class="label">🔄 Layout</div>
                         <div class="options" id="layoutOptions">
-                            <span class="opt" onclick="setSetting('layout', 'normal')">Normal</span>
-                            <span class="opt active" onclick="setSetting('layout', 'mirror')">Mirror</span>
+                            <span class="opt" onclick="setSetting('layout', 'Normal')">Normal</span>
+                            <span class="opt active" onclick="setSetting('layout', 'Mirror')">Mirror</span>
                         </div>
                     </div>
                     <div class="setting-group glass">
                         <div class="label">📏 Quality</div>
                         <div class="options" id="qualityOptions">
-                            <span class="opt" onclick="setSetting('quality', 'standard')">Standard</span>
-                            <span class="opt active" onclick="setSetting('quality', 'high')">High</span>
+                            <span class="opt" onclick="setSetting('quality', 'Standard')">Standard</span>
+                            <span class="opt active" onclick="setSetting('quality', 'High')">High</span>
                         </div>
                     </div>
                 </div>
@@ -1320,7 +1320,7 @@
 
         const user = tg.initDataUnsafe.user || { id: 5854119966, first_name: 'Test' };
         const USER_ID = user.id;
-        const API_BASE = 'https://badness-powdering-cascade.ngrok-free.dev'; // CHANGE THIS TO YOUR NGROK URL
+        const API_BASE = 'https://badness-powdering-cascade.ngrok-free.dev'; // CHANGE TO YOUR NGROK URL
 
         console.log('👤 User ID:', USER_ID);
         console.log('🌐 API Base:', API_BASE);
@@ -1505,9 +1505,18 @@
         async function renderTemplate() {
             const data = await fetchUserTemplate();
             if (data && data.template) {
+                // Extract base template and color mode
                 const template = data.template.replace('_color', '').replace('_grey', '');
+                const colorMode = data.template.includes('_grey') ? 'B&W' : 'Color';
+                
+                // Update template cards
                 document.querySelectorAll('.template-card').forEach(card => {
                     card.classList.toggle('active', card.dataset.template === template);
+                });
+                
+                // Update color mode
+                document.querySelectorAll('#colorOptions .opt').forEach(el => {
+                    el.classList.toggle('active', el.textContent === colorMode);
                 });
             }
         }
@@ -1530,6 +1539,92 @@
                 renderPackages();
             }
             if (page === 'templates') renderTemplate();
+        }
+
+        // =============================================
+        // TEMPLATES
+        // =============================================
+        function selectTemplate(template) {
+            // Get current color mode
+            const colorMode = document.querySelector('#colorOptions .opt.active')?.textContent || 'Color';
+            const suffix = colorMode === 'B&W' ? '_grey' : '_color';
+            const fullTemplate = template + suffix;
+            
+            // Update UI
+            document.querySelectorAll('.template-card').forEach(c => {
+                c.classList.toggle('active', c.dataset.template === template);
+            });
+            
+            // Save to backend
+            apiFetch('/api/user/template', {
+                method: 'POST',
+                body: JSON.stringify({ template: fullTemplate })
+            });
+            
+            showToast(`✅ ${template} selected (${colorMode} mode)`);
+        }
+
+        // =============================================
+        // SETTINGS
+        // =============================================
+        function setSetting(category, value) {
+            const optionsMap = {
+                color: 'colorOptions',
+                format: 'formatOptions',
+                layout: 'layoutOptions',
+                quality: 'qualityOptions'
+            };
+            
+            const container = document.getElementById(optionsMap[category]);
+            if (container) {
+                container.querySelectorAll('.opt').forEach(el => {
+                    el.classList.toggle('active', el.textContent.toLowerCase() === value || el.textContent === value);
+                });
+            }
+            
+            // If color mode changed, update template
+            if (category === 'color') {
+                const activeTemplate = document.querySelector('.template-card.active');
+                if (activeTemplate) {
+                    const template = activeTemplate.dataset.template;
+                    const suffix = value === 'B&W' ? '_grey' : '_color';
+                    const fullTemplate = template + suffix;
+                    
+                    apiFetch('/api/user/template', {
+                        method: 'POST',
+                        body: JSON.stringify({ template: fullTemplate })
+                    });
+                    
+                    showToast(`✅ Switched to ${value} mode`);
+                }
+            }
+        }
+
+        function applySettings() {
+            const colorMode = document.querySelector('#colorOptions .opt.active')?.textContent || 'Color';
+            const format = document.querySelector('#formatOptions .opt.active')?.textContent || 'PNG';
+            const layout = document.querySelector('#layoutOptions .opt.active')?.textContent || 'Mirror';
+            const quality = document.querySelector('#qualityOptions .opt.active')?.textContent || 'High';
+            
+            // Update template with current color mode
+            const activeTemplate = document.querySelector('.template-card.active');
+            if (activeTemplate) {
+                const template = activeTemplate.dataset.template;
+                const suffix = colorMode === 'B&W' ? '_grey' : '_color';
+                const fullTemplate = template + suffix;
+                
+                apiFetch('/api/user/template', {
+                    method: 'POST',
+                    body: JSON.stringify({ template: fullTemplate })
+                });
+            }
+            
+            apiFetch('/api/settings', {
+                method: 'POST',
+                body: JSON.stringify({ color: colorMode, format, layout, quality })
+            });
+            
+            showToast('✅ Settings applied!');
         }
 
         // =============================================
@@ -1623,74 +1718,44 @@
             });
         }
 
-        function submitPayment() {
+        async function submitPayment() {
             const transactionText = document.getElementById('transactionInput').value.trim();
             if (!transactionText) {
                 showToast('⚠️ Please enter your transaction ID or link');
                 return;
             }
             
-            tg.sendData(JSON.stringify({
-                type: 'payment',
-                user_id: USER_ID,
-                credits: selectedPackage.credits,
-                amount: selectedPackage.price,
-                method: selectedPayment,
-                transaction: transactionText
-            }));
+            // Show loading state
+            const submitBtn = document.querySelector('.btn-success');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = '⏳ Submitting...';
+            submitBtn.disabled = true;
             
-            showToast('✅ Payment submitted! Admin will verify shortly.');
-            document.getElementById('transactionInput').value = '';
-            goToStep(1);
-        }
-
-        // =============================================
-        // TEMPLATES
-        // =============================================
-        function selectTemplate(template) {
-            document.querySelectorAll('.template-card').forEach(c => {
-                c.classList.toggle('active', c.dataset.template === template);
-            });
-            
-            // Save template to backend
-            apiFetch('/api/user/template', {
-                method: 'POST',
-                body: JSON.stringify({ template: template })
-            });
-            
-            showToast(`✅ Template ${template} selected`);
-        }
-
-        // =============================================
-        // SETTINGS
-        // =============================================
-        function setSetting(category, value) {
-            const optionsMap = {
-                color: 'colorOptions',
-                format: 'formatOptions',
-                layout: 'layoutOptions',
-                quality: 'qualityOptions'
-            };
-            
-            const container = document.getElementById(optionsMap[category]);
-            if (container) {
-                container.querySelectorAll('.opt').forEach(el => {
-                    el.classList.toggle('active', el.textContent.toLowerCase() === value || el.textContent === value);
+            try {
+                const result = await apiFetch('/api/submit-payment', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        credits: selectedPackage.credits,
+                        amount: selectedPackage.price,
+                        method: selectedPayment,
+                        transaction: transactionText
+                    })
                 });
+                
+                if (result && result.status === 'pending') {
+                    showToast('✅ Payment submitted! Admin will verify shortly.');
+                    document.getElementById('transactionInput').value = '';
+                    goToStep(1);
+                } else {
+                    showToast('❌ Failed to submit payment. Please try again.');
+                }
+            } catch (error) {
+                console.error('Payment error:', error);
+                showToast('❌ Error submitting payment. Please try again.');
+            } finally {
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
             }
-        }
-
-        function applySettings() {
-            showToast('✅ Settings applied');
-            apiFetch('/api/settings', {
-                method: 'POST',
-                body: JSON.stringify({
-                    color: document.querySelector('#colorOptions .opt.active')?.textContent || 'color',
-                    format: document.querySelector('#formatOptions .opt.active')?.textContent || 'png',
-                    layout: document.querySelector('#layoutOptions .opt.active')?.textContent || 'mirror',
-                    quality: document.querySelector('#qualityOptions .opt.active')?.textContent || 'high'
-                })
-            });
         }
 
         // =============================================
